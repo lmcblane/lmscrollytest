@@ -1,72 +1,165 @@
-function initScroller() {
-    // ... (no changes to the code above this function) ...
+(function() {
+    /**
+     * The Story's Configuration.
+     * Each section now has a simple 'imageUrl'.
+     */
+    const config = {
+        story: [
+            {
+                narration: { heading: "Chapter 1: The Wide Expanse", paragraphs: ["Our story begins with a view of the vast, open landscapes where our journey will unfold."] },
+                imageUrl: "https://picsum.photos/id/1015/800/600" // A landscape photo
+            },
+            {
+                narration: { heading: "Chapter 2: A Narrowing Path", paragraphs: ["As we venture deeper, the path becomes more defined, guiding us toward the core of the narrative."] },
+                imageUrl: "https://picsum.photos/id/10/800/600" // A path or road
+            },
+            {
+                narration: { heading: "Chapter 3: The Central Point", paragraphs: ["Here we arrive at the heart of the matter, the key focus of our exploration."] },
+                imageUrl: "https://picsum.photos/id/1040/800/600" // A focused subject, like a castle
+            },
+            {
+                narration: { heading: "Chapter 4: A Look to the Future", paragraphs: ["Finally, we look outward, considering the implications of what we have seen and what lies ahead."] },
+                imageUrl: "https://picsum.photos/id/1043/800/600" // A view toward the horizon
+            }
+        ],
+        observerOptions: { threshold: 0.5 },
+        fadeDuration: 400
+    };
 
-    if (!('IntersectionObserver' in window)) {
-        console.error("IntersectionObserver not supported. Scrollytelling will not work.");
-        return;
+    /**
+     * Injects all necessary CSS into the document's head.
+     */
+    function injectStyles(fadeDuration) {
+        const style = document.createElement('style');
+        style.textContent = `
+            html, body { background: transparent; }
+            .scroller-section { position: relative; max-width: 650px; margin: 0 auto 100vh auto; padding: 1rem; }
+            .scroller-narration { background: rgba(24, 26, 27, 0.85); backdrop-filter: blur(8px) saturate(180%); color: #f0f0f0; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.125); }
+            .scroller-heading { font-size: 2rem; font-weight: bold; margin-bottom: 1rem; color: #fff; }
+            .scroller-paragraph { font-size: 1.1rem; line-height: 1.6; margin: 0; }
+            .sticky-chart-img { transition: opacity ${fadeDuration / 1000}s ease-in-out; }
+        `;
+        document.head.appendChild(style);
     }
-    const container = document.getElementById('scroller-container');
-    if (!container) {
-        console.error("Container with id 'scroller-container' not found.");
-        return;
+
+    /**
+     * Creates the sticky container and the image element.
+     */
+    function createStickyChart(container) {
+        const chartContainer = document.createElement('div');
+        Object.assign(chartContainer.style, {
+            position: 'sticky', top: '0', width: '100%', height: '100vh',
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            zIndex: '-1', background: '#e0e0e0'
+        });
+        const chartImg = document.createElement('img');
+        chartImg.className = 'sticky-chart-img';
+        Object.assign(chartImg.style, {
+            maxWidth: '90%', maxHeight: '90%', objectFit: 'cover',
+            opacity: '0', borderRadius: '12px', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)'
+        });
+        chartContainer.appendChild(chartImg);
+        container.appendChild(chartContainer);
+        return chartImg;
+    }
+    
+    /**
+     * Builds the scrollable text sections.
+     */
+    function buildContentSections(container, storyData) {
+        storyData.forEach((scene, idx) => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'scroller-section';
+            sectionEl.setAttribute('data-index', idx);
+            const narrationBox = document.createElement('div');
+            narrationBox.className = 'scroller-narration';
+            const heading = document.createElement('h2');
+            heading.className = 'scroller-heading';
+            heading.textContent = scene.narration.heading;
+            narrationBox.appendChild(heading);
+            scene.narration.paragraphs.forEach(p => {
+                const para = document.createElement('p');
+                para.className = 'scroller-paragraph';
+                para.textContent = p;
+                narrationBox.appendChild(para);
+            });
+            sectionEl.appendChild(narrationBox);
+            container.appendChild(sectionEl);
+        });
     }
 
-    injectStyles(config.fadeDuration);
-    const chartImg = createStickyChart(container);
-    buildContentSections(container, config.story);
+    /**
+     * Preloads all images to prevent loading delays during scroll.
+     */
+    function preloadImages(storyData) {
+        for (const scene of storyData) { (new Image()).src = scene.imageUrl; }
+    }
 
-    let activeIndex = -1;
+    /**
+     * Main function to initialize the scroller.
+     */
+    function initScroller() {
+        if (!('IntersectionObserver' in window)) {
+            console.error("IntersectionObserver not supported.");
+            return;
+        }
+        const container = document.getElementById('scroller-container');
+        if (!container) {
+            console.error("Container with id 'scroller-container' not found.");
+            return;
+        }
 
-    // This function will now handle the chart update logic
-    function updateChart(newIndex) {
-        if (newIndex === activeIndex) return;
-        activeIndex = newIndex;
+        injectStyles(config.fadeDuration);
+        const chartImg = createStickyChart(container);
+        buildContentSections(container, config.story);
+        preloadImages(config.story); // Preload the static images
 
-        // Start fading out
-        chartImg.style.opacity = 0;
+        let activeIndex = -1;
 
-        // Use a short timeout to let the fade-out animation begin before swapping the source.
-        // This is more robust than listening for the transitionend event.
-        setTimeout(() => {
-            const activeScene = config.story[activeIndex];
-            const svgGenerator = chartGenerators[activeScene.chartType];
-            
-            if (svgGenerator) {
-                const svgString = svgGenerator(activeScene.chartData);
-                const encodedSvg = btoa(svgString); // Base64 encode the SVG string
+        function updateChart(newIndex) {
+            if (newIndex === activeIndex) return;
+            activeIndex = newIndex;
+
+            chartImg.style.opacity = 0;
+
+            setTimeout(() => {
+                const activeScene = config.story[activeIndex];
                 
-                // The onload event ensures we only fade-in once the SVG is parsed and ready.
                 chartImg.onload = () => { 
                     chartImg.style.opacity = 1; 
                     chartImg.onload = null; 
                 };
-
-                // In case of any SVG error, just stay hidden.
                 chartImg.onerror = () => {
                     chartImg.style.opacity = 0;
                     chartImg.onerror = null;
                 };
 
-                chartImg.src = `data:image/svg+xml;base64,${encodedSvg}`;
-            }
-        }, config.fadeDuration / 2); // Wait for half the fade duration to swap
-    }
+                chartImg.src = activeScene.imageUrl;
 
-    const observer = new IntersectionObserver(entries => {
-        for (const entry of entries) {
-            if (entry.isIntersecting) {
-                const newIndex = parseInt(entry.target.getAttribute('data-index'));
-                updateChart(newIndex);
-                break; 
-            }
+            }, config.fadeDuration / 2);
         }
-    }, config.observerOptions);
 
-    document.querySelectorAll('.scroller-section').forEach(sec => observer.observe(sec));
+        const observer = new IntersectionObserver(entries => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    const newIndex = parseInt(entry.target.getAttribute('data-index'));
+                    updateChart(newIndex);
+                    break; 
+                }
+            }
+        }, config.observerOptions);
 
-    // Optional: Trigger the first chart immediately on load
-    const firstSection = document.querySelector('.scroller-section');
-    if(firstSection) {
-        updateChart(0);
+        document.querySelectorAll('.scroller-section').forEach(sec => observer.observe(sec));
+        
+        // Trigger the first image to show on load
+        if (document.querySelector('.scroller-section')) {
+            updateChart(0);
+        }
     }
-}
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initScroller);
+    } else {
+        initScroller();
+    }
+})();
