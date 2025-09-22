@@ -1,4 +1,4 @@
-// scrolly-sticky-paragraphs-fixed.js — GN4-safe sticky charts with black paragraphs
+// scrolly-sticky-paragraphs-early.js — sticky chart with black paragraphs appearing early
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -14,17 +14,45 @@
         wrapper.className = 'scroller-wrapper';
         container.appendChild(wrapper);
 
-        // CSS
+        // --- CSS ---
         const style = document.createElement('style');
         style.textContent = `
-            .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; line-height:1.6; padding:0 2rem; color: #000; }
-            .scroller-wrapper canvas { position: sticky; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; transition: opacity 1s ease; }
-            .heading-block { text-align: center; margin: 40px 0; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.2); padding:20px; border-radius:12px; display:inline-block; color:#fff; }
-            .scroller-wrapper p { max-width: 700px; margin: 16px auto; color: #000; }
+            .scroller-wrapper { 
+                position: relative; 
+                font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; 
+                line-height:1.6; 
+                padding: 0 2rem; 
+                color: #000; 
+            }
+            .scroller-wrapper canvas { 
+                position: sticky; 
+                top: 0; 
+                left: 0; 
+                width: 100%; 
+                height: 100vh; 
+                z-index: -1; 
+                transition: opacity 1s ease; 
+            }
+            .heading-block { 
+                text-align: center; 
+                margin: 10px 0; /* smaller vertical margin to appear early */ 
+                font-size: 1.5rem; 
+                font-weight: bold; 
+                background: rgba(0,0,0,0.2); 
+                padding: 15px; 
+                border-radius:12px; 
+                display:inline-block; 
+                color:#fff; 
+            }
+            .scroller-wrapper p { 
+                max-width: 700px; 
+                margin: 12px auto; 
+                color: #000; 
+            }
         `;
         document.head.appendChild(style);
 
-        // Create canvases
+        // --- Create canvases ---
         blocksData.forEach((block, idx) => {
             const canvas = document.createElement('canvas');
             canvas.width = window.innerWidth;
@@ -36,7 +64,7 @@
             drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
         });
 
-        // Add heading + paragraph filler text wrapped in divs
+        // --- Add heading + paragraph filler text wrapped in divs ---
         blocksData.forEach((block, idx) => {
             // Heading block
             const headingDiv = document.createElement('div');
@@ -45,9 +73,9 @@
             headingDiv.textContent = block.heading;
             wrapper.appendChild(headingDiv);
 
-            // Filler paragraphs wrapped in divs for observer
+            // Filler paragraphs wrapped in divs
             for (let i = 1; i <= 12; i++) {
-                const paraWrapper = document.createElement('div'); // wrapper div, no background
+                const paraWrapper = document.createElement('div'); 
                 paraWrapper.setAttribute('data-canvas-index', idx);
                 const p = document.createElement('p');
                 p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
@@ -56,7 +84,7 @@
             }
         });
 
-        // IntersectionObserver to switch canvas
+        // --- IntersectionObserver to switch canvas ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting){
@@ -66,13 +94,13 @@
                     });
                 }
             });
-        }, { threshold: 0.3 });
+        }, { threshold: 0 }); // trigger immediately when any part is visible
 
         wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-        console.log("✅ Sticky visual essay with black paragraph wrappers executed!");
+        console.log("✅ Sticky visual essay with early text display executed!");
 
-        // Draw bar chart
+        // --- Draw bar chart ---
         function drawBarChart(ctx, data, color, width, height){
             ctx.clearRect(0, 0, width, height);
             const barWidth = width / (data.length * 2);
@@ -95,7 +123,7 @@
         });
     }
 
-    // Ensure it runs even if DOMContentLoaded has fired
+    // Ensure it runs even if DOMContentLoaded already fired
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initScroller);
     } else {
