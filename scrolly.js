@@ -1,4 +1,4 @@
-// scrolly-sticky-paragraphs-top-tight.js — sticky chart with black paragraphs appearing near top
+// scrolly-sticky-paragraphs-50vh.js — sticky chart with black paragraphs and 50% spacing
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -35,7 +35,7 @@
             }
             .heading-block { 
                 text-align: center; 
-                margin: 0px 0 10px 0; /* very small top margin for first heading */ 
+                margin: 0px 0 10px 0; 
                 font-size: 1.5rem; 
                 font-weight: bold; 
                 background: rgba(0,0,0,0.2); 
@@ -46,7 +46,7 @@
             }
             .scroller-wrapper p { 
                 max-width: 700px; 
-                margin: 8px auto; /* tighter vertical spacing */ 
+                margin: 8px auto; 
                 color: #000; 
             }
         `;
@@ -64,24 +64,29 @@
             drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
         });
 
-        // --- Add heading + paragraph filler text wrapped in divs ---
+        // --- Add heading + paragraph filler text with 50% spacing ---
         blocksData.forEach((block, idx) => {
+            // Create a container for heading + paragraphs
+            const blockWrapper = document.createElement('div');
+            blockWrapper.setAttribute('data-canvas-index', idx);
+            blockWrapper.style.marginBottom = '50vh'; // 50% viewport spacing
+
             // Heading block
             const headingDiv = document.createElement('div');
             headingDiv.className = 'heading-block';
-            headingDiv.setAttribute('data-canvas-index', idx);
             headingDiv.textContent = block.heading;
-            wrapper.appendChild(headingDiv);
+            blockWrapper.appendChild(headingDiv);
 
             // Filler paragraphs wrapped in divs
             for (let i = 1; i <= 12; i++) {
                 const paraWrapper = document.createElement('div'); 
-                paraWrapper.setAttribute('data-canvas-index', idx);
                 const p = document.createElement('p');
                 p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
                 paraWrapper.appendChild(p);
-                wrapper.appendChild(paraWrapper);
+                blockWrapper.appendChild(paraWrapper);
             }
+
+            wrapper.appendChild(blockWrapper);
         });
 
         // --- IntersectionObserver to switch canvas ---
@@ -94,11 +99,11 @@
                     });
                 }
             });
-        }, { threshold: 0 }); // trigger immediately when any part is visible
+        }, { threshold: 0 });
 
         wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-        console.log("✅ Sticky visual essay with top-tight text executed!");
+        console.log("✅ Sticky visual essay with 50% spacing executed!");
 
         // --- Draw bar chart ---
         function drawBarChart(ctx, data, color, width, height){
@@ -123,7 +128,6 @@
         });
     }
 
-    // Ensure it runs even if DOMContentLoaded already fired
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initScroller);
     } else {
