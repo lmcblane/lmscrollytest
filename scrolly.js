@@ -1,4 +1,4 @@
-// scrolly-sticky-paragraphs-early.js — sticky chart with black paragraphs appearing early
+// scrolly-sticky-paragraphs-top-tight.js — sticky chart with black paragraphs appearing near top
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -35,7 +35,7 @@
             }
             .heading-block { 
                 text-align: center; 
-                margin: 10px 0; /* smaller vertical margin to appear early */ 
+                margin: 0px 0 10px 0; /* very small top margin for first heading */ 
                 font-size: 1.5rem; 
                 font-weight: bold; 
                 background: rgba(0,0,0,0.2); 
@@ -46,7 +46,7 @@
             }
             .scroller-wrapper p { 
                 max-width: 700px; 
-                margin: 12px auto; 
+                margin: 8px auto; /* tighter vertical spacing */ 
                 color: #000; 
             }
         `;
@@ -98,7 +98,7 @@
 
         wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-        console.log("✅ Sticky visual essay with early text display executed!");
+        console.log("✅ Sticky visual essay with top-tight text executed!");
 
         // --- Draw bar chart ---
         function drawBarChart(ctx, data, color, width, height){
