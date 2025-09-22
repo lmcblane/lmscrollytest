@@ -1,4 +1,4 @@
-// scrolly-sticky-paragraphs-50vh.js — sticky chart with black paragraphs and 50% spacing
+// scrolly-first-heading-outside.js — first heading outside wrapper, first canvas visible immediately
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -57,6 +57,7 @@
             const canvas = document.createElement('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            // First canvas visible immediately
             canvas.style.opacity = idx === 0 ? "1" : "0";
             wrapper.appendChild(canvas);
             block.canvas = canvas;
@@ -64,32 +65,7 @@
             drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
         });
 
-        // --- Add heading + paragraph filler text with 50% spacing ---
-        blocksData.forEach((block, idx) => {
-            // Create a container for heading + paragraphs
-            const blockWrapper = document.createElement('div');
-            blockWrapper.setAttribute('data-canvas-index', idx);
-            blockWrapper.style.marginBottom = '50vh'; // 50% viewport spacing
-
-            // Heading block
-            const headingDiv = document.createElement('div');
-            headingDiv.className = 'heading-block';
-            headingDiv.textContent = block.heading;
-            blockWrapper.appendChild(headingDiv);
-
-            // Filler paragraphs wrapped in divs
-            for (let i = 1; i <= 12; i++) {
-                const paraWrapper = document.createElement('div'); 
-                const p = document.createElement('p');
-                p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
-                paraWrapper.appendChild(p);
-                blockWrapper.appendChild(paraWrapper);
-            }
-
-            wrapper.appendChild(blockWrapper);
-        });
-
-        // --- IntersectionObserver to switch canvas ---
+        // --- IntersectionObserver for switching canvas ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting){
@@ -103,7 +79,7 @@
 
         wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-        console.log("✅ Sticky visual essay with 50% spacing executed!");
+        console.log("✅ Sticky visual essay with first heading outside executed!");
 
         // --- Draw bar chart ---
         function drawBarChart(ctx, data, color, width, height){
