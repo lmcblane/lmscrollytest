@@ -13,7 +13,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://www.datawrapper.de/_/2Pq0P/"
+                image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020'],datasets:[{label:'Population Growth',data:[100,105,110,115,120,125,130,135,140,145,150]}]}}"
             },
             {
                 heading: "CO₂ Emissions Trend in Major Countries",
@@ -24,7 +24,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://www.datawrapper.de/_/3Qw8J/"
+                image: "https://quickchart.io/chart?c={type:'bar',data:{labels:['USA','China','India','Russia','Japan'],datasets:[{label:'CO₂ Emissions',data:[5000,8000,3000,1500,1200]}]}}"
             },
             {
                 heading: "Renewable Energy Adoption Per Region",
@@ -35,7 +35,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://www.datawrapper.de/_/4Xy9Z/"
+                image: "https://quickchart.io/chart?c={type:'pie',data:{labels:['North America','Europe','Asia','Africa','South America'],datasets:[{data:[40,30,15,10,5]}]}}"
             }
         ];
 
