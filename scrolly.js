@@ -52,7 +52,7 @@
         const style = document.createElement('style');
         style.textContent = `
             .section { position: relative; width: 100%; }
-            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.5s ease; opacity: 0; }
+            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.7s ease; opacity: 0; }
             .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
             .text-block.visible { opacity: 1; }
             .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
@@ -113,13 +113,17 @@
             container.appendChild(sec);
         });
 
-        // --- IntersectionObserver ---
+        // --- IntersectionObserver for text blocks and chart fade ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting){
                     const idx = parseInt(entry.target.getAttribute('data-index'));
                     sectionsData.forEach((section, i) => {
-                        section.img.style.opacity = (i === idx) ? "1" : "0";
+                        if(i === idx){
+                            section.img.style.opacity = "1"; // fade in current chart
+                        } else {
+                            section.img.style.opacity = "0"; // fade out others
+                        }
                     });
                     entry.target.classList.add('visible');
                 }
