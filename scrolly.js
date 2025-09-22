@@ -3,7 +3,7 @@
         const container = document.getElementById('scroller-container');
         if (!container) return;
 
-        // Intro section
+        // --- Intro Section ---
         const introSection = document.createElement('div');
         introSection.className = 'section';
         const introText = document.createElement('div');
@@ -17,7 +17,29 @@
         introSection.appendChild(introText);
         container.appendChild(introSection);
 
-        // Data sections
+        // --- Sticky chart container ---
+        const chartContainer = document.createElement('div');
+        chartContainer.style.position = 'sticky';
+        chartContainer.style.top = '0';
+        chartContainer.style.width = '100%';
+        chartContainer.style.height = '100vh';
+        chartContainer.style.zIndex = '-1';
+        chartContainer.style.background = '#f0f0f0';
+        chartContainer.style.display = 'flex';
+        chartContainer.style.justifyContent = 'center';
+        chartContainer.style.alignItems = 'center';
+        container.appendChild(chartContainer);
+
+        // Chart image element
+        const chartImg = document.createElement('img');
+        chartImg.style.maxWidth = '90%';
+        chartImg.style.maxHeight = '90%';
+        chartImg.style.objectFit = 'contain';
+        chartImg.style.transition = 'opacity 0.5s ease';
+        chartImg.style.opacity = '0';
+        chartContainer.appendChild(chartImg);
+
+        // --- Data sections ---
         const sectionsData = [
             {
                 heading: "Population Growth Over the Last Decade",
@@ -52,27 +74,18 @@
         const style = document.createElement('style');
         style.textContent = `
             .section { position: relative; width: 100%; }
-            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.5s ease; opacity: 0; }
             .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
             .text-block.visible { opacity: 1; }
             .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
             .paragraph { margin-bottom: 1rem; }
-            .spacer { height: 50vh; } /* Increased spacing between sections */
+            .spacer { height: 50vh; }
         `;
         document.head.appendChild(style);
 
-        // --- Build data sections ---
+        // --- Build sections ---
         sectionsData.forEach((section, idx) => {
             const sec = document.createElement('div');
             sec.className = 'section';
-
-            // Sticky image
-            const img = document.createElement('img');
-            img.className = 'sticky-image';
-            img.src = section.image;
-            img.style.opacity = "0";
-            sec.appendChild(img);
-            section.img = img;
 
             // Spacer top
             const spacerTop = document.createElement('div');
@@ -109,15 +122,14 @@
         // --- IntersectionObserver ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if(entry.isIntersecting) {
+                if(entry.isIntersecting){
                     const idx = parseInt(entry.target.getAttribute('data-index'));
-                    sectionsData.forEach((section, i) => {
-                        section.img.style.opacity = (i === idx) ? "1" : "0";
-                    });
+                    chartImg.src = sectionsData[idx].image;
+                    chartImg.style.opacity = "1";
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.2 }); // Lower threshold → fade in sooner
+        }, { threshold: 0.3 });
 
         document.querySelectorAll('.text-block').forEach(block => observer.observe(block));
 
