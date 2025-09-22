@@ -1,4 +1,4 @@
-// scrolly-visual-essay.js — Data visualization visual essay
+// scrolly-sticky-visual-essay.js — sticky charts with scrolling text
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('scroller-container');
     if (!container) return;
@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const style = document.createElement('style');
     style.textContent = `
         .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; }
-        .scroller-wrapper canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index:-1; transition: opacity 1s ease; }
-        .scroller-wrapper .text-block { min-height:100vh; display:flex; justify-content:center; align-items:center; text-align:center; padding:2rem; box-sizing:border-box; }
-        .scroller-wrapper .text-block p { max-width:700px; font-size:1.2rem; line-height:1.5; background: rgba(0,0,0,0.4); padding:20px; border-radius:12px; margin:0; }
+        .scroller-wrapper canvas { position: sticky; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; transition: opacity 1s ease; }
+        .scroller-wrapper .text-block { min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; padding: 2rem; box-sizing: border-box; }
+        .scroller-wrapper .text-block p { max-width: 700px; font-size: 1.2rem; line-height: 1.5; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; margin: 0; }
     `;
     document.head.appendChild(style);
 
-    // --- Create canvases for each chart ---
+    // --- Create canvases for charts ---
     blocksData.forEach((block, idx) => {
         const canvas = document.createElement('canvas');
         canvas.width = window.innerWidth;
@@ -46,12 +46,10 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.appendChild(canvas);
         block.canvas = canvas;
         block.ctx = canvas.getContext('2d');
-
-        // Draw initial chart
         drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
     });
 
-    // --- Text blocks ---
+    // --- Create text blocks ---
     blocksData.forEach(block => {
         const div = document.createElement('div');
         div.className = 'text-block';
@@ -62,10 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.appendChild(div);
     });
 
-    // --- IntersectionObserver for canvas fade ---
+    // --- IntersectionObserver to switch visible chart ---
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            if(entry.isIntersecting) {
+            if(entry.isIntersecting){
                 const index = parseInt(entry.target.getAttribute('data-canvas-index'));
                 blocksData.forEach((block, i) => {
                     block.canvas.style.opacity = i === index ? "1" : "0";
@@ -76,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     wrapper.querySelectorAll('.text-block').forEach(block => observer.observe(block));
 
-    console.log("✅ Scrolly visual essay JS executed successfully!");
+    console.log("✅ Sticky scrollytelling visual essay JS executed!");
 
-    // --- Function to draw simple bar chart ---
-    function drawBarChart(ctx, data, color, width, height) {
+    // --- Draw simple bar chart function ---
+    function drawBarChart(ctx, data, color, width, height){
         ctx.clearRect(0, 0, width, height);
         const barWidth = width / (data.length * 2);
         const maxData = Math.max(...data);
@@ -92,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Resize handler ---
+    // --- Handle resize ---
     window.addEventListener('resize', () => {
         blocksData.forEach(block => {
             block.canvas.width = window.innerWidth;
