@@ -24,33 +24,34 @@
         chartImg.style.opacity = '0';
         chartContainer.appendChild(chartImg);
 
-        // --- Data sections ---
-        const sections = [
-            {
-                heading: "Population Growth Over the Last Decade",
-                paragraphs: [
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                ],
-                image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2015','2020'],datasets:[{label:'Population',data:[100,125,150]}]}}"
-            },
-            {
-                heading: "CO₂ Emissions Trend in Major Countries",
-                paragraphs: [
-                    "Emissions in major countries show varying trends over the years.",
-                    "China and India are seeing rapid increases, while Europe declines."
-                ],
-                image: "https://quickchart.io/chart?c={type:'bar',data:{labels:['USA','China','India'],datasets:[{label:'CO₂',data:[5000,8000,3000]}]}}"
-            },
-            {
-                heading: "Renewable Energy Adoption Per Region",
-                paragraphs: [
-                    "Renewables are growing fastest in Europe and North America.",
-                    "Other regions are slowly catching up."
-                ],
-                image: "https://quickchart.io/chart?c={type:'pie',data:{labels:['Europe','North America','Asia'],datasets:[{data:[40,35,25]}]}}"
-            }
-        ];
+        // --- First section ---
+        const section = {
+            heading: "Population Growth Over the Last Decade",
+            paragraphs: [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            ],
+            image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2015','2020'],datasets:[{label:'Population',data:[100,125,150]}]}}"
+        };
+
+        const sectionEl = document.createElement('div');
+        sectionEl.className = 'section';
+        sectionEl.setAttribute('data-index', 0);
+
+        const heading = document.createElement('div');
+        heading.className = 'heading';
+        heading.textContent = section.heading;
+        sectionEl.appendChild(heading);
+
+        section.paragraphs.forEach(p => {
+            const para = document.createElement('div');
+            para.className = 'paragraph';
+            para.textContent = p;
+            sectionEl.appendChild(para);
+        });
+
+        container.appendChild(sectionEl);
 
         // --- CSS ---
         const style = document.createElement('style');
@@ -61,35 +62,13 @@
         `;
         document.head.appendChild(style);
 
-        // --- Build sections ---
-        sections.forEach((sec, idx) => {
-            const sectionEl = document.createElement('div');
-            sectionEl.className = 'section';
-            sectionEl.setAttribute('data-index', idx);
-
-            const heading = document.createElement('div');
-            heading.className = 'heading';
-            heading.textContent = sec.heading;
-            sectionEl.appendChild(heading);
-
-            sec.paragraphs.forEach(p => {
-                const para = document.createElement('div');
-                para.className = 'paragraph';
-                para.textContent = p;
-                sectionEl.appendChild(para);
-            });
-
-            container.appendChild(sectionEl);
-        });
-
-        // --- IntersectionObserver to change chart ---
+        // --- IntersectionObserver to show chart ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
-                    const idx = parseInt(entry.target.getAttribute('data-index'));
                     chartImg.style.opacity = 0;
                     setTimeout(() => {
-                        chartImg.src = sections[idx].image;
+                        chartImg.src = section.image;
                         chartImg.style.opacity = 1;
                     }, 200);
                 }
