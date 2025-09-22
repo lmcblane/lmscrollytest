@@ -7,16 +7,14 @@
     { text: "Reflection — A moment to breathe.", bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" }
   ];
 
-  // --- Get GN4 container ---
   const container = document.getElementById('scroller-container');
   if(!container) return;
 
-  // --- Create wrapper ---
   const wrapper = document.createElement('div');
   wrapper.className = 'scroller-wrapper';
   container.appendChild(wrapper);
 
-  // --- Inject CSS dynamically ---
+  // --- Inject CSS ---
   const style = document.createElement('style');
   style.textContent = `
     .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; }
@@ -32,7 +30,7 @@
   bgDiv.style.backgroundImage = `url('${blocksData[0].bg}')`;
   wrapper.appendChild(bgDiv);
 
-  // --- Create text blocks ---
+  // --- Text blocks ---
   blocksData.forEach(block => {
     const div = document.createElement('div');
     div.className = 'text-block';
@@ -43,12 +41,12 @@
     wrapper.appendChild(div);
   });
 
-  // --- Normalize background URL for comparison ---
+  // --- Helper to normalize background URL ---
   function getCurrentBg() {
     return bgDiv.style.backgroundImage.replace(/url\(["']?|["']?\)/g,'');
   }
 
-  // --- IntersectionObserver for background fade ---
+  // --- IntersectionObserver for fading ---
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
@@ -65,5 +63,4 @@
   }, { threshold: 0 });
 
   wrapper.querySelectorAll('.text-block').forEach(block => observer.observe(block));
-
 })();
