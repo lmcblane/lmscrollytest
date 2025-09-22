@@ -1,4 +1,4 @@
-// scrolly-sticky-fixed.js — sticky canvases stacked behind text, first text visible immediately
+// scrolly-sticky-logic-fixed.js — sticky canvases with first text immediately visible
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -52,12 +52,79 @@
         `;
         document.head.appendChild(style);
 
-        // --- Create all sticky canvases at the top ---
+        // --- Build blocks and their canvases ---
         blocksData.forEach((block, idx) => {
+            // 1) Block wrapper (text)
+            const blockWrapper = document.createElement('div');
+            blockWrapper.className = 'block-wrapper';
+            blockWrapper.setAttribute('data-canvas-index', idx);
+            blockWrapper.style.marginBottom = '50vh';
+
+            const headingDiv = document.createElement('div');
+            headingDiv.className = 'heading-block';
+            headingDiv.textContent = block.heading;
+            blockWrapper.appendChild(headingDiv);
+
+            for (let i = 1; i <= 12; i++) {
+                const p = document.createElement('p');
+                p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
+                blockWrapper.appendChild(p);
+            }
+
+            wrapper.appendChild(blockWrapper);
+
+            // 2) Sticky canvas immediately after text block
             const canvas = document.createElement('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             canvas.style.opacity = idx === 0 ? "1" : "0"; // first canvas visible immediately
             wrapper.appendChild(canvas);
+
             block.canvas = canvas;
-            block.ctx = canvas.getContext('2d')
+            block.ctx = canvas.getContext('2d');
+            drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
+        });
+
+        // --- IntersectionObserver ---
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    const index = parseInt(entry.target.getAttribute('data-canvas-index'));
+                    blocksData.forEach((block, i) => {
+                        block.canvas.style.opacity = i === index ? "1" : "0";
+                    });
+                }
+            });
+        }, { threshold: [0, 0.01] }); // ensures first block triggers immediately
+
+        wrapper.querySelectorAll('.block-wrapper').forEach(el => observer.observe(el));
+
+        // --- Draw bar chart function ---
+        function drawBarChart(ctx, data, color, width, height){
+            ctx.clearRect(0, 0, width, height);
+            const barWidth = width / (data.length * 2);
+            const maxData = Math.max(...data);
+            data.forEach((value, i) => {
+                const x = i * barWidth * 2 + barWidth / 2;
+                const y = height - (value / maxData) * height * 0.8;
+                const barHeight = (value / maxData) * height * 0.8;
+                ctx.fillStyle = color;
+                ctx.fillRect(x, y, barWidth, barHeight);
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            blocksData.forEach(block => {
+                block.canvas.width = window.innerWidth;
+                block.canvas.height = window.innerHeight;
+                drawBarChart(block.ctx, block.data, block.color, block.canvas.width, block.canvas.height);
+            });
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initScroller);
+    } else {
+        initScroller();
+    }
+})();
