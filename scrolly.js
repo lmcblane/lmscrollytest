@@ -9,13 +9,34 @@
         const introText = document.createElement('div');
         introText.className = 'text-block fade';
         introText.style.textAlign = 'center';
-        introText.style.marginTop = '20vh'; // appear sooner
+        introText.style.marginTop = '20vh';
         introText.innerHTML = `
             <div class="heading" style="font-size:2.5rem;">How is the world changing?</div>
             <div class="paragraph" style="font-size:1.5rem; margin-top:1rem;">A visual essay exploring population, emissions, and renewable energy trends.</div>
         `;
         introSection.appendChild(introText);
         container.appendChild(introSection);
+
+        // --- Sticky chart container (single) ---
+        const chartContainer = document.createElement('div');
+        chartContainer.style.position = 'sticky';
+        chartContainer.style.top = '0';
+        chartContainer.style.width = '100%';
+        chartContainer.style.height = '100vh';
+        chartContainer.style.zIndex = '-1';
+        chartContainer.style.background = '#f0f0f0';
+        chartContainer.style.display = 'flex';
+        chartContainer.style.justifyContent = 'center';
+        chartContainer.style.alignItems = 'center';
+        container.appendChild(chartContainer);
+
+        const chartImg = document.createElement('img');
+        chartImg.style.maxWidth = '90%';
+        chartImg.style.maxHeight = '90%';
+        chartImg.style.objectFit = 'contain';
+        chartImg.style.transition = 'opacity 0.7s ease';
+        chartImg.style.opacity = '0';
+        chartContainer.appendChild(chartImg);
 
         // --- Data sections ---
         const sectionsData = [
@@ -52,14 +73,13 @@
         const style = document.createElement('style');
         style.textContent = `
             .section { position: relative; width: 100%; }
-            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.7s ease; opacity: 0; }
             .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
             .text-block.visible { opacity: 1; }
             .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
             .paragraph { margin-bottom: 1rem; }
-            .spacer { height: 80vh; } /* main scroll length for text */
-            .pause-top { height: 50vh; } /* pause before text scrolls */
-            .pause-bottom { height: 30vh; } /* pause after text ends before next chart */
+            .spacer { height: 80vh; }
+            .pause-top { height: 50vh; }
+            .pause-bottom { height: 30vh; }
         `;
         document.head.appendChild(style);
 
@@ -67,14 +87,6 @@
         sectionsData.forEach((section, idx) => {
             const sec = document.createElement('div');
             sec.className = 'section';
-
-            // Sticky image
-            const img = document.createElement('img');
-            img.className = 'sticky-image';
-            img.src = section.image;
-            img.style.opacity = "0";
-            sec.appendChild(img);
-            section.img = img;
 
             // Pause before text scroll
             const pauseTop = document.createElement('div');
@@ -118,13 +130,11 @@
             entries.forEach(entry => {
                 if(entry.isIntersecting){
                     const idx = parseInt(entry.target.getAttribute('data-index'));
-                    sectionsData.forEach((section, i) => {
-                        if(i === idx){
-                            section.img.style.opacity = "1"; // fade in current chart
-                        } else {
-                            section.img.style.opacity = "0"; // fade out others
-                        }
-                    });
+                    chartImg.style.opacity = 0; // fade out current
+                    setTimeout(() => {
+                        chartImg.src = sectionsData[idx].image;
+                        chartImg.style.opacity = 1; // fade in new chart
+                    }, 200);
                     entry.target.classList.add('visible');
                 }
             });
