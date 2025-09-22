@@ -1,4 +1,4 @@
-// scrolly-first-heading-outside.js — first heading outside wrapper, first canvas visible immediately
+// scrolly-sticky-fullfix.js — sticky charts with first text visible immediately
 (function() {
     function initScroller() {
         const container = document.getElementById('scroller-container');
@@ -35,7 +35,7 @@
             }
             .heading-block { 
                 text-align: center; 
-                margin: 0px 0 10px 0; 
+                margin: 0px 0 10px 0; /* no top margin for first heading */ 
                 font-size: 1.5rem; 
                 font-weight: bold; 
                 background: rgba(0,0,0,0.2); 
@@ -57,15 +57,36 @@
             const canvas = document.createElement('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            // First canvas visible immediately
-            canvas.style.opacity = idx === 0 ? "1" : "0";
+            canvas.style.opacity = idx === 0 ? "1" : "0"; // first canvas visible immediately
             wrapper.appendChild(canvas);
             block.canvas = canvas;
             block.ctx = canvas.getContext('2d');
             drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
         });
 
-        // --- IntersectionObserver for switching canvas ---
+        // --- Add heading + paragraphs with 50% spacing ---
+        blocksData.forEach((block, idx) => {
+            const blockWrapper = document.createElement('div');
+            blockWrapper.setAttribute('data-canvas-index', idx);
+            blockWrapper.style.marginBottom = '50vh'; // spacing between sections
+
+            // Heading
+            const headingDiv = document.createElement('div');
+            headingDiv.className = 'heading-block';
+            headingDiv.textContent = block.heading;
+            blockWrapper.appendChild(headingDiv);
+
+            // 12 filler paragraphs
+            for (let i = 1; i <= 12; i++) {
+                const p = document.createElement('p');
+                p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
+                blockWrapper.appendChild(p);
+            }
+
+            wrapper.appendChild(blockWrapper);
+        });
+
+        // --- IntersectionObserver to switch canvas ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting){
@@ -79,7 +100,7 @@
 
         wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-        console.log("✅ Sticky visual essay with first heading outside executed!");
+        console.log("✅ Sticky visual essay fully fixed and ready!");
 
         // --- Draw bar chart ---
         function drawBarChart(ctx, data, color, width, height){
