@@ -1,18 +1,22 @@
 (function(){
+  // --- Configuration: Text blocks and background URLs ---
   const blocksData = [
     { text: "Early Light — A quiet, blue morning.", bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" },
-    { text: "Clouds Gather — Tension builds as clouds roll in.", bg: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" },
+    { text: "Clouds Gather — Movement and color shift.", bg: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" },
     { text: "Climax — Powerful waves crash dramatically.", bg: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" },
     { text: "Reflection — A moment to breathe.", bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" }
   ];
 
+  // --- Get container ---
   const container = document.getElementById('scroller-container');
   if(!container) return;
 
+  // --- Create wrapper ---
   const wrapper = document.createElement('div');
   wrapper.className = 'scroller-wrapper';
   container.appendChild(wrapper);
 
+  // --- Inject CSS ---
   const style = document.createElement('style');
   style.textContent = `
     .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; }
@@ -22,11 +26,13 @@
   `;
   document.head.appendChild(style);
 
+  // --- Background div ---
   const bgDiv = document.createElement('div');
   bgDiv.className = 'background';
   bgDiv.style.backgroundImage = `url('${blocksData[0].bg}')`;
   wrapper.appendChild(bgDiv);
 
+  // --- Create text blocks ---
   blocksData.forEach(block => {
     const div = document.createElement('div');
     div.className = 'text-block';
@@ -37,10 +43,12 @@
     wrapper.appendChild(div);
   });
 
+  // --- Helper to normalize background URL ---
   function getCurrentBg() {
-    return bgDiv.style.backgroundImage.replace(/url\(["']?|["']?\)/g,'');
+    return bgDiv.style.backgroundImage.replace(/url\\(["']?|["']?\\)/g,'');
   }
 
+  // --- IntersectionObserver to fade background ---
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
