@@ -1,9 +1,8 @@
-// scrolly-sticky-visual-essay-filler.js — sticky charts with scrolling filler text
+// scrolly-sticky-paragraphs.js — sticky chart with paragraph-style scrolling text
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('scroller-container');
     if (!container) return;
 
-    // --- Define main blocks: heading + data ---
     const blocksData = [
         {
             heading: "Population growth over the last decade.",
@@ -22,22 +21,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
-    // --- Wrapper ---
     const wrapper = document.createElement('div');
     wrapper.className = 'scroller-wrapper';
     container.appendChild(wrapper);
 
-    // --- Inject CSS ---
+    // --- CSS ---
     const style = document.createElement('style');
     style.textContent = `
-        .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; }
+        .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; line-height:1.6; padding:0 2rem; }
         .scroller-wrapper canvas { position: sticky; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; transition: opacity 1s ease; }
-        .scroller-wrapper .text-block { min-height:100vh; display:flex; justify-content:center; align-items:center; text-align:center; padding:2rem; box-sizing:border-box; }
-        .scroller-wrapper .text-block p { max-width:700px; font-size:1.2rem; line-height:1.5; background: rgba(0,0,0,0.4); padding:20px; border-radius:12px; margin:0; }
+        .heading-block { text-align: center; margin: 50px 0; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.4); padding:20px; border-radius:12px; display:inline-block; }
+        .scroller-wrapper p { max-width: 700px; margin: 20px auto; }
     `;
     document.head.appendChild(style);
 
-    // --- Create canvases for charts ---
+    // --- Create canvases ---
     blocksData.forEach((block, idx) => {
         const canvas = document.createElement('canvas');
         canvas.width = window.innerWidth;
@@ -49,30 +47,25 @@ document.addEventListener('DOMContentLoaded', function() {
         drawBarChart(block.ctx, block.data, block.color, canvas.width, canvas.height);
     });
 
-    // --- Add text blocks with filler lines ---
+    // --- Add heading + paragraph filler text ---
     blocksData.forEach((block, idx) => {
-        // Main heading
+        // Heading
         const headingDiv = document.createElement('div');
-        headingDiv.className = 'text-block';
+        headingDiv.className = 'heading-block';
         headingDiv.setAttribute('data-canvas-index', idx);
-        const headingP = document.createElement('p');
-        headingP.textContent = block.heading;
-        headingDiv.appendChild(headingP);
+        headingDiv.textContent = block.heading;
         wrapper.appendChild(headingDiv);
 
-        // Add 10-12 filler lines between headings
+        // Filler paragraphs (10–12 lines)
         for (let i = 1; i <= 12; i++) {
-            const fillerDiv = document.createElement('div');
-            fillerDiv.className = 'text-block';
-            fillerDiv.setAttribute('data-canvas-index', idx); // same canvas index
-            const fillerP = document.createElement('p');
-            fillerP.textContent = `Lorem ipsum placeholder text line ${i} for section ${idx+1}.`;
-            fillerDiv.appendChild(fillerP);
-            wrapper.appendChild(fillerDiv);
+            const p = document.createElement('p');
+            p.setAttribute('data-canvas-index', idx);
+            p.textContent = `Lorem ipsum placeholder paragraph ${i} for section ${idx+1}.`;
+            wrapper.appendChild(p);
         }
     });
 
-    // --- IntersectionObserver to switch visible chart ---
+    // --- IntersectionObserver to switch canvas ---
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if(entry.isIntersecting){
@@ -84,11 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { threshold: 0.3 });
 
-    wrapper.querySelectorAll('.text-block').forEach(block => observer.observe(block));
+    wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-    console.log("✅ Sticky scrollytelling visual essay with filler text JS executed!");
+    console.log("✅ Sticky visual essay with paragraph text executed!");
 
-    // --- Draw simple bar chart function ---
     function drawBarChart(ctx, data, color, width, height){
         ctx.clearRect(0, 0, width, height);
         const barWidth = width / (data.length * 2);
@@ -102,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Handle resize ---
     window.addEventListener('resize', () => {
         blocksData.forEach(block => {
             block.canvas.width = window.innerWidth;
