@@ -3,147 +3,100 @@
         const container = document.getElementById('scroller-container');
         if (!container) return;
 
-        // --- Intro Section ---
-        const introSection = document.createElement('div');
-        introSection.className = 'section';
-        const introText = document.createElement('div');
-        introText.className = 'text-block fade';
-        introText.style.textAlign = 'center';
-        introText.style.marginTop = '20vh';
-        introText.innerHTML = `
-            <div class="heading" style="font-size:2.5rem;">How is the world changing?</div>
-            <div class="paragraph" style="font-size:1.5rem; margin-top:1rem;">A visual essay exploring population, emissions, and renewable energy trends.</div>
-        `;
-        introSection.appendChild(introText);
-        container.appendChild(introSection);
-
-        // --- Sticky chart container (single) ---
+        // --- Sticky chart container ---
         const chartContainer = document.createElement('div');
         chartContainer.style.position = 'sticky';
         chartContainer.style.top = '0';
         chartContainer.style.width = '100%';
-        chartContainer.style.height = '100vh';
-        chartContainer.style.zIndex = '-1';
-        chartContainer.style.background = '#f0f0f0';
+        chartContainer.style.height = '60vh';
         chartContainer.style.display = 'flex';
         chartContainer.style.justifyContent = 'center';
         chartContainer.style.alignItems = 'center';
+        chartContainer.style.background = '#f0f0f0';
+        chartContainer.style.zIndex = '-1';
         container.appendChild(chartContainer);
 
         const chartImg = document.createElement('img');
         chartImg.style.maxWidth = '90%';
-        chartImg.style.maxHeight = '90%';
+        chartImg.style.maxHeight = '100%';
         chartImg.style.objectFit = 'contain';
         chartImg.style.transition = 'opacity 0.7s ease';
         chartImg.style.opacity = '0';
         chartContainer.appendChild(chartImg);
 
         // --- Data sections ---
-        const sectionsData = [
+        const sections = [
             {
                 heading: "Population Growth Over the Last Decade",
                 paragraphs: [
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 ],
-                image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020'],datasets:[{label:'Population Growth',data:[100,105,110,115,120,125,130,135,140,145,150]}]}}"
+                image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2015','2020'],datasets:[{label:'Population',data:[100,125,150]}]}}"
             },
             {
                 heading: "CO₂ Emissions Trend in Major Countries",
                 paragraphs: [
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    "Emissions in major countries show varying trends over the years.",
+                    "China and India are seeing rapid increases, while Europe declines."
                 ],
-                image: "https://quickchart.io/chart?c={type:'bar',data:{labels:['USA','China','India','Russia','Japan'],datasets:[{label:'CO₂ Emissions',data:[5000,8000,3000,1500,1200]}]}}"
+                image: "https://quickchart.io/chart?c={type:'bar',data:{labels:['USA','China','India'],datasets:[{label:'CO₂',data:[5000,8000,3000]}]}}"
             },
             {
                 heading: "Renewable Energy Adoption Per Region",
                 paragraphs: [
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    "Renewables are growing fastest in Europe and North America.",
+                    "Other regions are slowly catching up."
                 ],
-                image: "https://quickchart.io/chart?c={type:'pie',data:{labels:['North America','Europe','Asia','Africa','South America'],datasets:[{data:[40,30,15,10,5]}]}}"
+                image: "https://quickchart.io/chart?c={type:'pie',data:{labels:['Europe','North America','Asia'],datasets:[{data:[40,35,25]}]}}"
             }
         ];
 
         // --- CSS ---
         const style = document.createElement('style');
         style.textContent = `
-            .section { position: relative; width: 100%; }
-            .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
-            .text-block.visible { opacity: 1; }
-            .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
-            .paragraph { margin-bottom: 1rem; }
-            .spacer { height: 80vh; }
-            .pause-top { height: 50vh; }
-            .pause-bottom { height: 30vh; }
+            .section { max-width:700px; margin:0 auto 100px auto; }
+            .heading { font-size:1.8rem; font-weight:bold; margin-bottom:0.5rem; }
+            .paragraph { margin-bottom:1rem; font-size:1.2rem; line-height:1.5; }
         `;
         document.head.appendChild(style);
 
         // --- Build sections ---
-        sectionsData.forEach((section, idx) => {
-            const sec = document.createElement('div');
-            sec.className = 'section';
-
-            // Pause before text scroll
-            const pauseTop = document.createElement('div');
-            pauseTop.className = 'pause-top';
-            sec.appendChild(pauseTop);
-
-            // Text block
-            const textBlock = document.createElement('div');
-            textBlock.className = 'text-block fade';
-            textBlock.setAttribute('data-index', idx);
+        sections.forEach((sec, idx) => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'section';
+            sectionEl.setAttribute('data-index', idx);
 
             const heading = document.createElement('div');
             heading.className = 'heading';
-            heading.textContent = section.heading;
-            textBlock.appendChild(heading);
+            heading.textContent = sec.heading;
+            sectionEl.appendChild(heading);
 
-            section.paragraphs.forEach(pText => {
-                const p = document.createElement('div');
-                p.className = 'paragraph';
-                p.textContent = pText;
-                textBlock.appendChild(p);
+            sec.paragraphs.forEach(p => {
+                const para = document.createElement('div');
+                para.className = 'paragraph';
+                para.textContent = p;
+                sectionEl.appendChild(para);
             });
 
-            sec.appendChild(textBlock);
-
-            // Main scrolling spacer for text
-            const spacer = document.createElement('div');
-            spacer.className = 'spacer';
-            sec.appendChild(spacer);
-
-            // Pause after text ends
-            const pauseBottom = document.createElement('div');
-            pauseBottom.className = 'pause-bottom';
-            sec.appendChild(pauseBottom);
-
-            container.appendChild(sec);
+            container.appendChild(sectionEl);
         });
 
-        // --- IntersectionObserver for text blocks and chart fade ---
+        // --- IntersectionObserver to change chart ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if(entry.isIntersecting){
+                if(entry.isIntersecting) {
                     const idx = parseInt(entry.target.getAttribute('data-index'));
-                    chartImg.style.opacity = 0; // fade out current
+                    chartImg.style.opacity = 0;
                     setTimeout(() => {
-                        chartImg.src = sectionsData[idx].image;
-                        chartImg.style.opacity = 1; // fade in new chart
+                        chartImg.src = sections[idx].image;
+                        chartImg.style.opacity = 1;
                     }, 200);
-                    entry.target.classList.add('visible');
                 }
             });
         }, { threshold: 0.5 });
 
-        document.querySelectorAll('.text-block').forEach(block => observer.observe(block));
-
-        // Fade in intro text immediately
-        introText.classList.add('visible');
+        document.querySelectorAll('.section').forEach(sec => observer.observe(sec));
     }
 
     if(document.readyState === "loading"){
