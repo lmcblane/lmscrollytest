@@ -1,57 +1,72 @@
 (function() {
     /**
-     * Configuration object for the scroller.
-     * Makes it easy to change settings and content.
+     * The Story's Configuration.
+     * This object acts as the "script" for our visual essay,
+     * outlining the narrative beats and their corresponding data visuals.
      */
     const config = {
-        // Data for each content section
-        sections: [
+        story: [
             {
-                heading: "Population Growth Over the Last Decade",
-                paragraphs: [
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                ],
-                image: "https://quickchart.io/chart?c={type:'line',data:{labels:['2010','2015','2020'],datasets:[{label:'Population',data:[100,125,150]}]}}"
+                // 1. The Hook: A dramatic opening to grab the reader's attention.
+                narration: {
+                    heading: "The Silent Fading",
+                    paragraphs: ["Over the last fifty years, the celestial oceans have grown quiet. The majestic Sky-Whales, once countless, are now a rare and fleeting sight."]
+                },
+                // The Visual: A stark line chart showing the sharp population decline.
+                chartUrl: "https://quickchart.io/chart?c={type:'line',data:{labels:[1975,1985,1995,2005,2025],datasets:[{label:'Global Sky-Whale Population (in thousands)',data:[85,72,55,30,12],fill:true,borderColor:'rgb(75, 192, 192)',backgroundColor:'rgba(75, 192, 192, 0.2)'}]}}"
             },
             {
-                heading: "CO₂ Emissions Trend in Major Countries",
-                paragraphs: [
-                    "Emissions in major countries show varying trends over the years.",
-                    "China and India are seeing rapid increases, while Europe declines."
-                ],
-                image: "https://quickchart.io/chart?c={type:'bar',data:{labels:['USA','China','India'],datasets:[{label:'CO₂',data:[5000,8000,3000]}]}}"
+                // 2. Rising Action: Introducing the primary cause of the problem.
+                narration: {
+                    heading: "A Vanishing Feast",
+                    paragraphs: ["Our research points to a single, devastating cause: the collapse of their primary food source, the Aether-Plankton.", "The depletion is not uniform, with the Northern Celestial Gyre showing the most catastrophic losses."]
+                },
+                // The Visual: A bar chart comparing plankton loss across different regions.
+                chartUrl: "https://quickchart.io/chart?c={type:'bar',data:{labels:['Northern Gyre','Southern Belt','Equatorial Stream'],datasets:[{label:'Aether-Plankton Depletion (%)',data:[82,45,28],backgroundColor:['rgba(255, 99, 132, 0.7)','rgba(54, 162, 235, 0.7)','rgba(255, 206, 86, 0.7)']}]}}"
             },
             {
-                heading: "Renewable Energy Adoption Per Region",
-                paragraphs: [
-                    "Renewables are growing fastest in Europe and North America.",
-                    "Other regions are slowly catching up."
-                ],
-                image: "https://quickchart.io/chart?c={type:'pie',data:{labels:['Europe','North America','Asia'],datasets:[{data:[40,35,25]}]}}"
+                // 3. The Climax: The core insight that connects the data points.
+                narration: {
+                    heading: "A Perilous Journey",
+                    paragraphs: ["This is the crux of the crisis. The Sky-Whales' ancient migration routes now pass directly through the most barren, plankton-depleted zones.", "They are, in essence, journeying through vast cosmic deserts."]
+                },
+                // The Visual: A scatter plot overlaying migration routes and depletion zones, with annotations highlighting the dangerous overlap.
+                chartUrl: "https://quickchart.io/chart?v=2.9.4&c={type:'scatter',data:{datasets:[{label:'Migration Route',data:[{x:10,y:80},{x:20,y:75},{x:30,y:60},{x:40,y:40},{x:50,y:20},{x:60,y:22}],borderColor:'blue',fill:false,showLine:true},{label:'Plankton Dead Zone',data:[{x:35,y:55},{x:40,y:48},{x:45,y:40},{x:50,y:30}],backgroundColor:'rgba(255,99,132,0.5)',pointRadius:15}]},options:{plugins:{annotation:{annotations:[{type:'box',xMin:35,xMax:50,yMin:25,yMax:60,backgroundColor:'rgba(255,99,132,0.25)',borderColor:'red'},{type:'label',content:'Fatal Overlap',xValue:52,yValue:50,font:{size:14},color:'red'}]}}}}"
+            },
+            {
+                // 4. The Conclusion: A final, summarizing thought or call to action.
+                narration: {
+                    heading: "An Echo in the Void",
+                    paragraphs: ["Without their sustenance, the Sky-Whales' journey has become a silent march toward extinction.", "Understanding this perilous intersection is the first step toward charting a new course for their survival."]
+                },
+                // The Visual: A simple, impactful "doughnut" chart showing the remaining population.
+                chartUrl: "https://quickchart.io/chart?c={type:'doughnut',data:{labels:['Extant Population','Lost Population'],datasets:[{data:[12,88],backgroundColor:['rgb(75, 192, 192)','rgba(0,0,0,0.1)']}]},options:{plugins:{doughnutlabel:{labels:[{text:'12%',font:{size:20}},{text:'Remaining'}]}}}}"
             }
         ],
-        // IntersectionObserver options: trigger when a section is 50% in view
-        observerOptions: {
-            threshold: 0.5
-        },
-        // CSS transition duration in milliseconds
-        fadeDuration: 300 // Shorter duration for responsiveness
+        observerOptions: { threshold: 0.5 },
+        fadeDuration: 400 // A slightly longer fade for a more cinematic feel
     };
 
-    /**
-     * Injects the necessary CSS into the document's head.
-     * Includes comments about potential parent styling conflicts.
-     */
     function injectStyles(fadeDuration) {
         const style = document.createElement('style');
         style.textContent = `
-            /* CRITICAL: For z-index: -1 to work, parent elements
-               (like <body>) must NOT have a solid background color.
-               Ensure parents have 'background: transparent;'. */
-            .scroller-section { max-width:700px; margin:0 auto 100vh auto; padding: 20px; }
-            .scroller-heading { font-size:1.8rem; font-weight:bold; margin-bottom:0.5rem; }
-            .scroller-paragraph { margin-bottom:1rem; font-size:1.2rem; line-height:1.5; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(4px); padding: 10px; border-radius: 8px;}
+            /* CRITICAL: Parent elements (like <body>) must have 'background: transparent;' */
+            .scroller-section { 
+                position: relative; 
+                max-width: 650px; 
+                margin: 0 auto 100vh auto; 
+                padding: 1rem;
+            }
+            .scroller-narration {
+                background: rgba(24, 26, 27, 0.85);
+                backdrop-filter: blur(8px) saturate(180%);
+                color: #f0f0f0;
+                padding: 1.5rem;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.125);
+            }
+            .scroller-heading { font-size: 2rem; font-weight: bold; margin-bottom: 1rem; color: #fff; }
+            .scroller-paragraph { font-size: 1.1rem; line-height: 1.6; margin: 0; }
             .sticky-chart-img {
                 transition: opacity ${fadeDuration / 1000}s ease-in-out;
             }
@@ -59,143 +74,93 @@
         document.head.appendChild(style);
     }
 
-    /**
-     * Creates the sticky container and the image element for the chart.
-     * @param {HTMLElement} container - The main scroller container.
-     * @returns {HTMLImageElement} The image element that will display charts.
-     */
     function createStickyChart(container) {
         const chartContainer = document.createElement('div');
         Object.assign(chartContainer.style, {
-            position: 'sticky',
-            top: '0',
-            width: '100%',
-            height: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: '-1' // Places the chart behind the text content
+            position: 'sticky', top: '0', width: '100%', height: '100vh',
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            zIndex: '-1', background: '#f0f0f0' // A light background for the chart area
         });
-
         const chartImg = document.createElement('img');
         chartImg.className = 'sticky-chart-img';
         Object.assign(chartImg.style, {
-            maxWidth: '80%',
-            maxHeight: '80%',
-            objectFit: 'contain',
-            opacity: '0' // Start hidden
+            maxWidth: '85%', maxHeight: '85%', objectFit: 'contain',
+            opacity: '0', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)'
         });
-
         chartContainer.appendChild(chartImg);
         container.appendChild(chartContainer);
         return chartImg;
     }
-
-    /**
-     * Builds the scrollable text sections from the config data.
-     * @param {HTMLElement} container - The main scroller container.
-     * @param {Array} sectionsData - The array of section objects.
-     */
-    function buildContentSections(container, sectionsData) {
-        sectionsData.forEach((sec, idx) => {
+    
+    function buildContentSections(container, storyData) {
+        storyData.forEach((scene, idx) => {
             const sectionEl = document.createElement('div');
             sectionEl.className = 'scroller-section';
             sectionEl.setAttribute('data-index', idx);
+            
+            const narrationBox = document.createElement('div');
+            narrationBox.className = 'scroller-narration';
 
             const heading = document.createElement('h2');
             heading.className = 'scroller-heading';
-            heading.textContent = sec.heading;
-            sectionEl.appendChild(heading);
+            heading.textContent = scene.narration.heading;
+            narrationBox.appendChild(heading);
 
-            sec.paragraphs.forEach(p => {
+            scene.narration.paragraphs.forEach(p => {
                 const para = document.createElement('p');
                 para.className = 'scroller-paragraph';
                 para.textContent = p;
-                sectionEl.appendChild(para);
+                narrationBox.appendChild(para);
             });
-
+            sectionEl.appendChild(narrationBox);
             container.appendChild(sectionEl);
         });
     }
 
-    /**
-     * Preloads all chart images to prevent loading delays during scroll.
-     * @param {Array} sectionsData - The array of section objects.
-     */
-    function preloadImages(sectionsData) {
-        console.log("Preloading images...");
-        for (const sec of sectionsData) {
-            const img = new Image();
-            img.src = sec.image;
-        }
+    function preloadImages(storyData) {
+        for (const scene of storyData) { (new Image()).src = scene.chartUrl; }
     }
 
-    /**
-     * The main function to initialize the entire scrollytelling component.
-     */
     function initScroller() {
-        // 1. Browser Capability Check
         if (!('IntersectionObserver' in window)) {
-            console.error("IntersectionObserver is not supported by this browser. Scrollytelling will not work.");
+            console.error("IntersectionObserver not supported. Scrollytelling will not work.");
             return;
         }
-        
         const container = document.getElementById('scroller-container');
         if (!container) {
-            console.error("Scroller container with id 'scroller-container' not found.");
+            console.error("Container with id 'scroller-container' not found.");
             return;
         }
 
-        // 2. Setup the DOM and Styles
         injectStyles(config.fadeDuration);
         const chartImg = createStickyChart(container);
-        buildContentSections(container, config.sections);
+        buildContentSections(container, config.story);
+        preloadImages(config.story);
 
-        // 3. Preload images for a smoother experience
-        preloadImages(config.sections);
-
-        let activeIndex = -1; // Keep track of the currently visible chart index
-
-        // 4. Setup the IntersectionObserver
+        let activeIndex = -1;
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
+            for (const entry of entries) {
                 if (entry.isIntersecting) {
                     const newIndex = parseInt(entry.target.getAttribute('data-index'));
-                    if (newIndex === activeIndex) return; // Do nothing if it's the same section
-
+                    if (newIndex === activeIndex) break;
                     activeIndex = newIndex;
                     
-                    // Fade out the current image
+                    const handleTransitionEnd = () => {
+                        chartImg.onerror = () => { chartImg.style.opacity = 0; chartImg.onerror = null; };
+                        chartImg.onload = () => { chartImg.style.opacity = 1; chartImg.onload = null; };
+                        chartImg.src = config.story[activeIndex].chartUrl;
+                    };
+                    
                     chartImg.style.opacity = 0;
-
-                    // Listen for the fade-out transition to end before changing the source
-                    chartImg.addEventListener('transitionend', () => {
-                        // This event listener should only run once per fade-out
-                        
-                        // ✅ Robust: Add error handling for broken image links
-                        chartImg.onerror = () => {
-                            console.error("Failed to load image:", config.sections[activeIndex].image);
-                            chartImg.style.opacity = 0; // Hide broken image icon
-                            chartImg.onerror = null; // Clear handler
-                        };
-
-                        // ✅ Robust: Wait for the new image to load before fading in
-                        chartImg.onload = () => {
-                            chartImg.style.opacity = 1;
-                            chartImg.onload = null; // Clear handler
-                        };
-                        
-                        chartImg.src = config.sections[activeIndex].image;
-                        
-                    }, { once: true }); // { once: true } is crucial for this to work correctly
+                    chartImg.addEventListener('transitionend', handleTransitionEnd, { once: true });
+                    break; 
                 }
-            });
+            }
         }, config.observerOptions);
 
         document.querySelectorAll('.scroller-section').forEach(sec => observer.observe(sec));
     }
 
-    // Run the initialization logic after the DOM has loaded
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initScroller);
     } else {
