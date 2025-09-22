@@ -3,6 +3,22 @@
         const container = document.getElementById('scroller-container');
         if (!container) return;
 
+        // Intro section (title + subhead)
+        const introSection = document.createElement('div');
+        introSection.className = 'section';
+
+        const introText = document.createElement('div');
+        introText.className = 'text-block fade';
+        introText.style.textAlign = 'center';
+        introText.style.marginTop = '40vh';
+        introText.innerHTML = `
+            <div class="heading" style="font-size:2.5rem;">How is the world changing?</div>
+            <div class="paragraph" style="font-size:1.5rem; margin-top:1rem;">A visual essay exploring population, emissions, and renewable energy trends.</div>
+        `;
+        introSection.appendChild(introText);
+        container.appendChild(introSection);
+
+        // Data sections
         const sectionsData = [
             {
                 heading: "Population Growth Over the Last Decade",
@@ -43,15 +59,16 @@
         const style = document.createElement('style');
         style.textContent = `
             .section { position: relative; width: 100%; }
-            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.5s ease; }
-            .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; }
+            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.5s ease; opacity: 0; }
+            .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
+            .text-block.visible { opacity: 1; }
             .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
             .paragraph { margin-bottom: 1rem; }
-            .spacer { height: 33vh; } /* initial overlap / pause before text scroll */
+            .spacer { height: 33vh; }
         `;
         document.head.appendChild(style);
 
-        // --- Build sections ---
+        // --- Build data sections ---
         sectionsData.forEach((section, idx) => {
             const sec = document.createElement('div');
             sec.className = 'section';
@@ -60,7 +77,7 @@
             const img = document.createElement('img');
             img.className = 'sticky-image';
             img.src = section.image;
-            img.style.opacity = idx === 0 ? "1" : "0";
+            img.style.opacity = "0"; // fade controlled by observer
             sec.appendChild(img);
             section.img = img;
 
@@ -71,7 +88,7 @@
 
             // Text block
             const textBlock = document.createElement('div');
-            textBlock.className = 'text-block';
+            textBlock.className = 'text-block fade';
             textBlock.setAttribute('data-index', idx);
 
             const heading = document.createElement('div');
@@ -99,19 +116,25 @@
         // --- IntersectionObserver ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
+                if(entry.isIntersecting) {
                     const idx = parseInt(entry.target.getAttribute('data-index'));
+                    // Fade in the image
                     sectionsData.forEach((section, i) => {
                         section.img.style.opacity = (i === idx) ? "1" : "0";
                     });
+                    // Fade in the text
+                    entry.target.classList.add('visible');
                 }
             });
         }, { threshold: 0.5 });
 
         document.querySelectorAll('.text-block').forEach(block => observer.observe(block));
+
+        // Fade in intro text immediately
+        introText.classList.add('visible');
     }
 
-    if (document.readyState === "loading") {
+    if(document.readyState === "loading"){
         document.addEventListener("DOMContentLoaded", initScroller);
     } else {
         initScroller();
