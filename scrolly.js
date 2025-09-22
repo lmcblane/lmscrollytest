@@ -13,7 +13,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://academy.datawrapper.de/article/245-how-to-create-your-first-datawrapper-chart"
+                image: "https://www.datawrapper.de/_/2Pq0P/"
             },
             {
                 heading: "CO₂ Emissions Trend in Major Countries",
@@ -24,7 +24,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://academy.datawrapper.de/article/245-how-to-create-your-first-datawrapper-chart"
+                image: "https://www.datawrapper.de/_/3Qw8J/"
             },
             {
                 heading: "Renewable Energy Adoption Per Region",
@@ -35,7 +35,7 @@
                     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 ],
-                image: "https://academy.datawrapper.de/article/245-how-to-create-your-first-datawrapper-chart"
+                image: "https://www.datawrapper.de/_/4Xy9Z/"
             }
         ];
 
