@@ -1,4 +1,4 @@
-// scrolly-sticky-paragraphs.js — sticky chart with paragraph-style scrolling text
+// scrolly-sticky-paragraphs-black.js — sticky chart with black paragraph text
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('scroller-container');
     if (!container) return;
@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- CSS ---
     const style = document.createElement('style');
     style.textContent = `
-        .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; line-height:1.6; padding:0 2rem; }
+        .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #000; line-height:1.6; padding:0 2rem; }
         .scroller-wrapper canvas { position: sticky; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; transition: opacity 1s ease; }
-        .heading-block { text-align: center; margin: 50px 0; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.4); padding:20px; border-radius:12px; display:inline-block; }
-        .scroller-wrapper p { max-width: 700px; margin: 20px auto; }
+        .heading-block { text-align: center; margin: 40px 0; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.2); padding:20px; border-radius:12px; display:inline-block; color:#fff; }
+        .scroller-wrapper p { max-width: 700px; margin: 16px auto; color: #000; } /* black text for paragraphs */
     `;
     document.head.appendChild(style);
 
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     wrapper.querySelectorAll('[data-canvas-index]').forEach(el => observer.observe(el));
 
-    console.log("✅ Sticky visual essay with paragraph text executed!");
+    console.log("✅ Sticky visual essay with black paragraph text executed!");
 
     function drawBarChart(ctx, data, color, width, height){
         ctx.clearRect(0, 0, width, height);
@@ -96,9 +96,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('resize', () => {
         blocksData.forEach(block => {
-            block.canvas.width = window.innerWidth;
-            block.canvas.height = window.innerHeight;
-            drawBarChart(block.ctx, block.data, block.color, block.canvas.width, block.canvas.height);
-        });
-    });
-});
