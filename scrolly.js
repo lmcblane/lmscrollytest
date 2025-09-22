@@ -1,5 +1,5 @@
-(function(){
-  // --- Configuration: Text blocks and background URLs ---
+(function() {
+  // --- Configuration: text blocks and background URLs ---
   const blocksData = [
     { text: "Early Light — A quiet, blue morning.", bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" },
     { text: "Clouds Gather — Movement and color shift.", bg: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" },
@@ -7,7 +7,7 @@
     { text: "Reflection — A moment to breathe.", bg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" }
   ];
 
-  // --- Get container ---
+  // --- Get GN4 container ---
   const container = document.getElementById('scroller-container');
   if(!container) return;
 
@@ -16,7 +16,7 @@
   wrapper.className = 'scroller-wrapper';
   container.appendChild(wrapper);
 
-  // --- Inject CSS ---
+  // --- Inject CSS dynamically ---
   const style = document.createElement('style');
   style.textContent = `
     .scroller-wrapper { position: relative; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: #e6eef6; }
@@ -43,12 +43,12 @@
     wrapper.appendChild(div);
   });
 
-  // --- Helper to normalize background URL ---
+  // --- Normalize background URL for comparison ---
   function getCurrentBg() {
-    return bgDiv.style.backgroundImage.replace(/url\\(["']?|["']?\\)/g,'');
+    return bgDiv.style.backgroundImage.replace(/url\(["']?|["']?\)/g,'');
   }
 
-  // --- IntersectionObserver to fade background ---
+  // --- IntersectionObserver for background fade ---
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
@@ -65,4 +65,5 @@
   }, { threshold: 0 });
 
   wrapper.querySelectorAll('.text-block').forEach(block => observer.observe(block));
+
 })();
