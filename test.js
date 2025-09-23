@@ -181,6 +181,10 @@ const storyData = [
   }
 ];
 
+// ✅ --- REGISTER THE ANNOTATION PLUGIN ---
+// This line tells Chart.js to activate the annotation plugin.
+Chart.register(window.ChartAnnotation);
+
 // Build DOM
 const container = document.getElementById('scroller-container');
 const charts = []; // Store chart instances here
@@ -327,7 +331,6 @@ const animationObserver = new IntersectionObserver((entries)=>{
   });
 },{threshold:0.4});
 
-// ✅ --- CORRECTED LINE ---
 // We observe the .viz-container itself, not its parent.
 vizContainers.forEach(vc => animationObserver.observe(vc));
 document.querySelectorAll('.step-content').forEach(st => animationObserver.observe(st));
@@ -352,4 +355,3 @@ const chartUpdateObserver = new IntersectionObserver((entries) => {
 });
 
 steps.forEach(step => chartUpdateObserver.observe(step));
-
