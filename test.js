@@ -44,7 +44,10 @@ style.textContent = `
 
   .story-content { position: relative; z-index: 2; padding-top: 50vh; }
   .story-step { margin: 50vh 0; display: flex; justify-content: flex-end; padding: 0 5%; }
-  .story-step:nth-child(even){ justify-content: flex-start; }
+  .story-step:nth-child(even){
+  justify-content: flex-start;
+  padding-left: 10%; /* ✅ Add this line */
+}
   .step-content {
     max-width: 450px;
     background: rgba(255,255,255,0.08); border-radius: 20px;
