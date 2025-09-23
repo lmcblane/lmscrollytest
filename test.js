@@ -9,7 +9,7 @@
         const introText = document.createElement('div');
         introText.className = 'text-block fade';
         introText.style.textAlign = 'center';
-        introText.style.marginTop = '20vh'; // appear sooner
+        introText.style.marginTop = '40vh';
         introText.innerHTML = `
             <div class="heading" style="font-size:2.5rem;">How is the world changing?</div>
             <div class="paragraph" style="font-size:1.5rem; margin-top:1rem;">A visual essay exploring population, emissions, and renewable energy trends.</div>
@@ -52,14 +52,12 @@
         const style = document.createElement('style');
         style.textContent = `
             .section { position: relative; width: 100%; }
-            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.7s ease; opacity: 0; }
+            .sticky-image { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; transition: opacity 0.5s ease; opacity: 0; }
             .text-block { position: relative; margin: 0 auto; max-width: 700px; padding: 2rem; box-sizing: border-box; color: #000; opacity: 0; transition: opacity 1s ease; }
             .text-block.visible { opacity: 1; }
             .heading { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; display: inline-block; }
             .paragraph { margin-bottom: 1rem; }
-            .spacer { height: 80vh; } /* main scroll length for text */
-            .pause-top { height: 50vh; } /* pause before text scrolls */
-            .pause-bottom { height: 30vh; } /* pause after text ends before next chart */
+            .spacer { height: 50vh; }
         `;
         document.head.appendChild(style);
 
@@ -76,10 +74,10 @@
             sec.appendChild(img);
             section.img = img;
 
-            // Pause before text scroll
-            const pauseTop = document.createElement('div');
-            pauseTop.className = 'pause-top';
-            sec.appendChild(pauseTop);
+            // Spacer top
+            const spacerTop = document.createElement('div');
+            spacerTop.className = 'spacer';
+            sec.appendChild(spacerTop);
 
             // Text block
             const textBlock = document.createElement('div');
@@ -100,30 +98,21 @@
 
             sec.appendChild(textBlock);
 
-            // Main scrolling spacer for text
-            const spacer = document.createElement('div');
-            spacer.className = 'spacer';
-            sec.appendChild(spacer);
-
-            // Pause after text ends
-            const pauseBottom = document.createElement('div');
-            pauseBottom.className = 'pause-bottom';
-            sec.appendChild(pauseBottom);
+            // Spacer bottom
+            const spacerBottom = document.createElement('div');
+            spacerBottom.className = 'spacer';
+            sec.appendChild(spacerBottom);
 
             container.appendChild(sec);
         });
 
-        // --- IntersectionObserver for text blocks and chart fade ---
+        // --- IntersectionObserver ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if(entry.isIntersecting){
                     const idx = parseInt(entry.target.getAttribute('data-index'));
                     sectionsData.forEach((section, i) => {
-                        if(i === idx){
-                            section.img.style.opacity = "1"; // fade in current chart
-                        } else {
-                            section.img.style.opacity = "0"; // fade out others
-                        }
+                        section.img.style.opacity = (i === idx) ? "1" : "0";
                     });
                     entry.target.classList.add('visible');
                 }
