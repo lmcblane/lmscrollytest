@@ -1,19 +1,13 @@
 // Inject styles
 const style = document.createElement('style');
-style.textContent = ``
+style.textContent = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    color: white;
     overflow-x: hidden;
+    /* remove forced color:white here */
   }
-
-  /* ✅ Apply dark background ONLY to the CMS body copy wrapper */
-  .GN4_body {
-    background: #0a0a0a;
-  }
-
-  #scroller-container { position: relative; width: 100%; }
+  #scroller-container { position: relative; width: 100%; background: #0a0a0a}
 
   .hero-section {
     height: 100vh; display: flex; flex-direction: column;
