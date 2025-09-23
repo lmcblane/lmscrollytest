@@ -4,7 +4,9 @@ style.textContent = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: #0a0a0a; color: #fff; overflow-x: hidden;
+    background: #0a0a0a;
+    overflow-x: hidden;
+    /* remove forced color:white here */
   }
   #scroller-container { position: relative; width: 100%; }
 
@@ -13,6 +15,7 @@ style.textContent = `
     justify-content: center; align-items: center;
     background: radial-gradient(circle at center, rgba(29,78,216,0.15) 0%, transparent 70%);
     text-align: center; padding: 2rem;
+    color: white;
   }
   .hero-title {
     font-size: clamp(3rem, 8vw, 6rem); font-weight: 900;
@@ -38,7 +41,7 @@ style.textContent = `
     transition: all 0.8s cubic-bezier(0.4,0,0.2,1);
   }
   .viz-container.visible { opacity: 1; transform: scale(1) translateY(0); }
-  .viz-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; text-align: center; }
+  .viz-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: white; }
 
   .story-content { position: relative; z-index: 2; padding-top: 50vh; }
   .story-step { margin: 50vh 0; display: flex; justify-content: flex-end; padding: 0 5%; }
@@ -57,6 +60,7 @@ style.textContent = `
     border-radius: 50%; text-align: center; line-height: 40px;
     font-weight: 700; margin-bottom: 1rem;
   }
+  /* ✅ Only body copy text is forced white here */
   .step-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
   .step-text { color: rgba(255,255,255,0.95); line-height: 1.6; font-size: 1.05rem; }
 
