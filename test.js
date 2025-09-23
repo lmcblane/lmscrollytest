@@ -1,4 +1,7 @@
-// Inject styles (No changes here)
+// A comment to remind you to include the annotation plugin in your HTML!
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.2.1/chartjs-plugin-annotation.min.js"></script>
+
+// Inject styles
 const style = document.createElement('style');
 style.textContent = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -70,7 +73,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ✅ --- NEW DATA SECTIONS ADDED ---
+// Data sections
 const storyData = [
   {
     title:"Global Population Surge",
@@ -180,7 +183,7 @@ const storyData = [
 
 // Build DOM
 const container = document.getElementById('scroller-container');
-const charts = []; // ✅ Store chart instances here
+const charts = []; // Store chart instances here
 
 // Hero
 const hero = document.createElement('div');
@@ -193,7 +196,6 @@ container.appendChild(hero);
 storyData.forEach((story, sectionIndex)=>{
   const section = document.createElement('div');
   section.className = 'story-section';
-  // ✅ Add a data attribute to identify the section
   section.dataset.sectionId = sectionIndex;
 
   const vizSticky = document.createElement('div');
@@ -210,7 +212,6 @@ storyData.forEach((story, sectionIndex)=>{
   story.steps.forEach((step, stepIndex)=>{
     const stepDiv = document.createElement('div');
     stepDiv.className = 'story-step';
-    // ✅ Add data attributes to identify the step and its parent section
     stepDiv.dataset.sectionId = sectionIndex;
     stepDiv.dataset.stepId = stepIndex;
     stepDiv.innerHTML = `
@@ -227,31 +228,46 @@ storyData.forEach((story, sectionIndex)=>{
 
   // Chart
   const ctx = vizSticky.querySelector('canvas').getContext('2d');
-  const chart = new Chart(ctx, {
-    type: story.chartType,
-    data: story.chartData,
-    options: {
+
+  // --- CORRECTED CHART CONFIGURATION ---
+  const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      scales: story.chartType === 'bar' && story.chartData.datasets.length > 1 ? { x: { stacked: true }, y: { stacked: true } } : {},
       plugins: {
-        legend: { labels: { color: '#fff' } },
-        // ✅ Initialize the annotation plugin
-        annotation: {
-          annotations: {}
-        }
-      },
-      scales: {
-        x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)'} },
-        y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)'} }
+          legend: { labels: { color: '#fff' } },
+          annotation: { annotations: {} }
       }
-    }
+  };
+
+  // Conditionally add scales only for charts that use them (i.e., not doughnut/pie)
+  if (story.chartType !== 'doughnut' && story.chartType !== 'pie') {
+      chartOptions.scales = {
+          x: {
+              ticks: { color: '#fff' },
+              grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          y: {
+              ticks: { color: '#fff' },
+              grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+      };
+      // Add stacking logic specifically for the stacked bar chart
+      if (story.title === "The Rise of Renewable Energy") {
+          chartOptions.scales.x.stacked = true;
+          chartOptions.scales.y.stacked = true;
+      }
+  }
+
+  const chart = new Chart(ctx, {
+      type: story.chartType,
+      data: story.chartData,
+      options: chartOptions
   });
-  // ✅ Push the created chart instance to our array
   charts.push(chart);
 });
 
-// ✅ --- NEW INTERACTIVE LOGIC ---
+
+// --- INTERACTIVE LOGIC ---
 
 // A function to update charts based on the visible step
 function updateChart(sectionId, stepId) {
