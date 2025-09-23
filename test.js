@@ -1,7 +1,6 @@
 // Inject styles
 const style = document.createElement('style');
-style.textContent = `
-const styles = `
+style.textContent = ``
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
