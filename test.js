@@ -1,3 +1,5 @@
+// --- START OF SCRIPT ---
+
 window.addEventListener('DOMContentLoaded', () => {
     // A comment to remind you to include the annotation plugin in your HTML!
     // <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.2.1/chartjs-plugin-annotation.min.js"></script>
@@ -159,12 +161,11 @@ window.addEventListener('DOMContentLoaded', () => {
     ];
     
     // REGISTER THE ANNOTATION PLUGIN
-    // This line tells Chart.js to activate the annotation plugin.
     Chart.register(window.ChartAnnotation);
     
     // Build DOM
     const container = document.getElementById('scroller-container');
-    const charts = []; // Store chart instances here
+    const charts = [];
     
     // Hero
     const hero = document.createElement('div');
@@ -251,12 +252,11 @@ window.addEventListener('DOMContentLoaded', () => {
         const chart = charts[sectionId];
         if (!chart) return;
     
-        const defaultAnnotation = {};
-        chart.options.plugins.annotation.annotations = defaultAnnotation;
+        chart.options.plugins.annotation.annotations = {};
     
-        if (storyData[sectionId].chartData.datasets[0].backgroundColor) {
-          const originalBgColors = storyData[sectionId].chartData.datasets[0].backgroundColor;
-          chart.data.datasets[0].backgroundColor = [...originalBgColors];
+        const originalBgColors = storyData[sectionId].chartData.datasets[0].backgroundColor;
+        if (Array.isArray(originalBgColors)) {
+            chart.data.datasets[0].backgroundColor = [...originalBgColors];
         }
         
         switch (parseInt(sectionId)) {
@@ -332,3 +332,5 @@ window.addEventListener('DOMContentLoaded', () => {
     
     steps.forEach(step => chartUpdateObserver.observe(step));
 });
+
+// --- END OF SCRIPT ---
